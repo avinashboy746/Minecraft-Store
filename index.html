@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Server Backups</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  background:#070b0f;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(0,255,120,.12),transparent 30%),
+    radial-gradient(circle at 80% 70%,rgba(0,180,255,.10),transparent 30%);
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* NAVBAR */
+nav{
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 7%;
+  background:rgba(5,8,10,.88);
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+  font-size:21px;
+  font-weight:900;
+  color:#55ff55;
+  text-shadow:0 0 15px rgba(85,255,85,.5);
+}
+
+nav a{
+  color:#ddd;
+  text-decoration:none;
+  margin-left:24px;
+  font-size:14px;
+}
+
+nav a:hover{
+  color:#55ff55;
+}
+
+/* HERO */
+.hero{
+  min-height:650px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:80px 20px;
+  position:relative;
+}
+
+.hero-content{
+  max-width:850px;
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 15px;
+  border:1px solid rgba(85,255,85,.35);
+  border-radius:30px;
+  color:#55ff55;
+  background:rgba(85,255,85,.07);
+  margin-bottom:22px;
+  font-size:13px;
+}
+
+.hero h1{
+  font-size:clamp(42px,8vw,78px);
+  line-height:1;
+  font-weight:1000;
+  margin-bottom:22px;
+}
+
+.hero h1 span{
+  color:#55ff55;
+  text-shadow:0 0 30px rgba(85,255,85,.4);
+}
+
+.hero p{
+  color:#aaa;
+  font-size:18px;
+  line-height:1.7;
+  max-width:700px;
+  margin:auto;
+}
+
+.buttons{
+  margin-top:32px;
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  border:0;
+  padding:14px 25px;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.primary{
+  background:#55ff55;
+  color:#061006;
+  box-shadow:0 0 25px rgba(85,255,85,.25);
+}
+
+.secondary{
+  color:white;
+  background:#111820;
+  border:1px solid #26313a;
+}
+
+/* SECTION */
+section{
+  padding:75px 7%;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:45px;
+}
+
+.section-title h2{
+  font-size:36px;
+  margin-bottom:10px;
+}
+
+.section-title p{
+  color:#888;
+}
+
+/* OFFER CARDS */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:18px;
+  max-width:1200px;
+  margin:auto;
+}
+
+.card{
+  background:linear-gradient(145deg,#10171d,#0b1015);
+  border:1px solid #202a31;
+  border-radius:16px;
+  padding:25px;
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-7px);
+  border-color:#55ff55;
+  box-shadow:0 15px 40px rgba(0,0,0,.35);
+}
+
+.card .icon{
+  font-size:35px;
+  margin-bottom:15px;
+}
+
+.card h3{
+  margin-bottom:8px;
+}
+
+.card p{
+  color:#888;
+  font-size:14px;
+  line-height:1.5;
+}
+
+/* PRODUCTS */
+.products{
+  max-width:1200px;
+  margin:auto;
+}
+
+.product{
+  background:#0e1419;
+  border:1px solid #222c33;
+  border-radius:18px;
+  overflow:hidden;
+  transition:.3s;
+}
+
+.product:hover{
+  transform:translateY(-6px);
+  border-color:#55ff55;
+}
+
+.product-img{
+  height:170px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:65px;
+  background:
+    linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.7)),
+    linear-gradient(135deg,#183b20,#101b25);
+}
+
+.product-body{
+  padding:20px;
+}
+
+.product-body h3{
+  margin-bottom:8px;
+}
+
+.product-body p{
+  color:#888;
+  font-size:13px;
+  min-height:40px;
+}
+
+.price{
+  font-size:25px;
+  color:#55ff55;
+  font-weight:bold;
+  margin:18px 0;
+}
+
+.buy{
+  width:100%;
+  padding:12px;
+  border:0;
+  border-radius:9px;
+  background:#55ff55;
+  color:#071007;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* WHY */
+.why{
+  max-width:1000px;
+  margin:auto;
+}
+
+.why-item{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  background:#0e1419;
+  border:1px solid #202a31;
+  padding:18px;
+  border-radius:12px;
+  margin-bottom:12px;
+}
+
+.check{
+  font-size:22px;
+}
+
+/* STEPS */
+.steps{
+  max-width:1000px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+}
+
+.step{
+  text-align:center;
+  padding:25px 15px;
+  background:#0e1419;
+  border:1px solid #202a31;
+  border-radius:14px;
+}
+
+.number{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:#55ff55;
+  color:#061006;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 15px;
+  font-weight:900;
+}
+
+/* SUPPORT */
+.support{
+  max-width:950px;
+  margin:auto;
+  padding:50px 25px;
+  text-align:center;
+  background:linear-gradient(135deg,#102018,#0e151b);
+  border:1px solid #284132;
+  border-radius:22px;
+}
+
+.support h2{
+  font-size:35px;
+  margin-bottom:12px;
+}
+
+.support p{
+  color:#999;
+  line-height:1.7;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:35px 20px;
+  border-top:1px solid #1c252b;
+  color:#777;
+}
+
+footer strong{
+  color:#55ff55;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(7px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+  padding:20px;
+}
+
+.modal-box{
+  width:100%;
+  max-width:430px;
+  background:#10171c;
+  border:1px solid #314038;
+  border-radius:18px;
+  padding:28px;
+}
+
+.modal-box h2{
+  margin-bottom:10px;
+}
+
+.modal-box p{
+  color:#999;
+  margin-bottom:20px;
+}
+
+.close{
+  float:right;
+  cursor:pointer;
+  font-size:22px;
+}
+
+input,textarea{
+  width:100%;
+  background:#080d11;
+  border:1px solid #29343b;
+  color:white;
+  padding:13px;
+  border-radius:9px;
+  margin-bottom:12px;
+  outline:none;
+}
+
+input:focus,textarea:focus{
+  border-color:#55ff55;
+}
+
+.submit{
+  width:100%;
+  border:0;
+  background:#55ff55;
+  padding:13px;
+  border-radius:9px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* MOBILE */
+@media(max-width:700px){
+  nav{
+    padding:15px 5%;
+  }
+
+  nav .links{
+    display:none;
+  }
+
+  .hero{
+    min-height:580px;
+  }
+
+  section{
+    padding:55px 5%;
+  }
+
+  .section-title h2{
+    font-size:29px;
+  }
+
+  .hero p{
+    font-size:15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="logo">⛏️ MINECRAFT BACKUPS</div>
+
+  <div class="links">
+    <a href="#home">Home</a>
+    <a href="#setups">Setups</a>
+    <a href="#why">Why Us</a>
+    <a href="#support">Support</a>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+
+    <div class="badge">🚀 READY-TO-USE MINECRAFT SETUPS</div>
+
+    <h1>
+      MINECRAFT<br>
+      <span>SERVER BACKUPS</span>
+    </h1>
+
+    <p>
+      Apne Minecraft server ko next level par le jao!
+      Yahan tumhe milenge high-quality, ready-to-use
+      Minecraft server backups — easy to install aur
+      beginner-friendly.
+    </p>
+
+    <div class="buttons">
+      <a href="#setups" class="btn primary">🛒 Browse Setups</a>
+      <a href="#support" class="btn secondary">🎟️ Get Support</a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- WHAT WE OFFER -->
+<section id="setups">
+
+  <div class="section-title">
+    <h2>🔥 WHAT WE OFFER</h2>
+    <p>Everything you need to build your Minecraft server.</p>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="icon">🏰</div>
+      <h3>Survival / SMP</h3>
+      <p>Ready Survival and SMP server setups.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">⚔️</div>
+      <h3>PvP & KitPvP</h3>
+      <p>Competitive PvP and KitPvP configurations.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🛏️</div>
+      <h3>BedWars</h3>
+      <p>Complete BedWars server setup backups.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🌎</div>
+      <h3>Lobby & Spawn</h3>
+      <p>Beautiful lobby and spawn configurations.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">💰</div>
+      <h3>Economy & Shop</h3>
+      <p>Economy, shop and trading configurations.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">👑</div>
+      <h3>Ranks & Permissions</h3>
+      <p>Pre-configured ranks and permissions.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🎁</div>
+      <h3>Crates & Rewards</h3>
+      <p>Crates and reward systems ready to use.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">👤</div>
+      <h3>NPC & TAB</h3>
+      <p>NPC, TAB and server presentation setups.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">⚙️</div>
+      <h3>Plugins & Configs</h3>
+      <p>Clean plugin configurations and files.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🌐</div>
+      <h3>Complete Setups</h3>
+      <p>Full server setups ready for installation.</p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- PRODUCTS -->
+<section>
+
+  <div class="section-title">
+    <h2>🛒 FEATURED SETUPS</h2>
+    <p>Choose a setup and place your order.</p>
+  </div>
+
+  <div class="grid products">
+
+    <div class="product">
+      <div class="product-img">🏰</div>
+      <div class="product-body">
+        <h3>Survival SMP</h3>
+        <p>Complete Survival SMP server setup.</p>
+        <div class="price">₹20</div>
+        <button class="buy" onclick="openOrder('Survival SMP')">
+          Buy Now
+        </button>
+      </div>
+    </div>
+
+    <div class="product">
+      <div class="product-img">⚔️</div>
+      <div class="product-body">
+        <h3>KitPvP Setup</h3>
+        <p>Ready-to-use PvP server configuration.</p>
+        <div class="price">₹30</div>
+        <button class="buy" onclick="openOrder('KitPvP Setup')">
+          Buy Now
+        </button>
+      </div>
+    </div>
+
+    <div class="product">
+      <div class="product-img">🛏️</div>
+      <div class="product-body">
+        <h3>BedWars Setup</h3>
+        <p>Complete BedWars setup and configurations.</p>
+        <div class="price">₹40</div>
+        <button class="buy" onclick="openOrder('BedWars Setup')">
+          Buy Now
+        </button>
+      </div>
+    </div>
+
+    <div class="product">
+      <div class="product-img">🌎</div>
+      <div class="product-body">
+        <h3>Lobby Setup</h3>
+        <p>Clean lobby and spawn server setup.</p>
+        <div class="price">₹25</div>
+        <button class="buy" onclick="openOrder('Lobby Setup')">
+          Buy Now
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- WHY CHOOSE US -->
+<section id="why">
+
+  <div class="section-title">
+    <h2>💎 WHY CHOOSE US?</h2>
+    <p>Simple, affordable and beginner-friendly.</p>
+  </div>
+
+  <div class="why">
+
+    <div class="why-item">
+      <span class="check">✅</span>
+      <span>Ready-to-use backups</span>
+    </div>
+
+    <div class="why-item">
+      <span class="check">✅</span>
+      <span>Easy installation</span>
+    </div>
+
+    <div class="why-item">
+      <span class="check">✅</span>
+      <span>Clean & organized configurations</span>
+    </div>
+
+    <div class="why-item">
+      <span class="check">✅</span>
+      <span>Affordable prices</span>
+    </div>
+
+    <div class="why-item">
+      <span class="check">✅</span>
+      <span>Regularly added new setups</span>
+    </div>
+
+    <div class="why-item">
+      <span class="check">✅</span>
+      <span>Support available for setup-related issues</span>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- HOW TO BUY -->
+<section>
+
+  <div class="section-title">
+    <h2>🛒 HOW TO BUY</h2>
+    <p>Get your setup in a few simple steps.</p>
+  </div>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="number">1</div>
+      <h3>Choose</h3>
+      <p>Apna favourite setup choose karo.</p>
+    </div>
+
+    <div class="step">
+      <div class="number">2</div>
+      <h3>Order</h3>
+      <p>Order place karo.</p>
+    </div>
+
+    <div class="step">
+      <div class="number">3</div>
+      <h3>Payment</h3>
+      <p>Payment complete karo.</p>
+    </div>
+
+    <div class="step">
+      <div class="number">4</div>
+      <h3>Receive</h3>
+      <p>Backup receive karo.</p>
+    </div>
+
+    <div class="step">
+      <div class="number">5</div>
+      <h3>PLAY!</h3>
+      <p>Server install karo and PLAY 🎮</p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- PRICE -->
+<section>
+
+  <div class="support">
+    <h2>💰 AFFORDABLE PRICES</h2>
+    <p>
+      High-quality Minecraft server setups without expensive prices.
+      <br><br>
+      Starting from just
+    </p>
+
+    <div class="price">₹20+</div>
+
+    <a href="#setups" class="btn primary">
+      🛒 Browse Setups
+    </a>
+  </div>
+
+</section>
+
+
+<!-- SUPPORT -->
+<section id="support">
+
+  <div class="support">
+
+    <h2>🎟️ NEED HELP?</h2>
+
+    <p>
+      Setup, payment ya installation se related koi problem hai?
+      Hamari support team se contact karo aur help pao.
+    </p>
+
+    <br>
+
+    <button class="btn primary" onclick="openSupport()">
+      🎟️ Contact Support
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <strong>⛏️ MINECRAFT SERVER BACKUPS</strong>
+  <br><br>
+  🚀 BUILD YOUR SERVER. PLAY YOUR WAY. 🎮
+  <br><br>
+  © 2026 All Rights Reserved.
+</footer>
+
+
+<!-- ORDER MODAL -->
+<div class="modal" id="orderModal">
+
+  <div class="modal-box">
+
+    <span class="close" onclick="closeModal()">×</span>
+
+    <h2>🛒 Place Order</h2>
+
+    <p id="selectedProduct">
+      Selected Setup
+    </p>
+
+    <input type="text" id="name" placeholder="Your Name">
+
+    <input type="text" id="discord" placeholder="Discord Username">
+
+    <input type="email" id="email" placeholder="Email Address">
+
+    <textarea id="message" rows="4"
+      placeholder="Any special requirements?"></textarea>
+
+    <button class="submit" onclick="submitOrder()">
+      Submit Order
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- SUPPORT MODAL -->
+<div class="modal" id="supportModal">
+
+  <div class="modal-box">
+
+    <span class="close" onclick="closeSupport()">×</span>
+
+    <h2>🎟️ Support</h2>
+
+    <p>Apni problem details mein batao.</p>
+
+    <input type="text" placeholder="Your Name">
+
+    <input type="text" placeholder="Discord Username">
+
+    <textarea rows="5"
+      placeholder="Describe your problem..."></textarea>
+
+    <button class="submit"
+      onclick="supportSent()">
+      Send Request
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+let selected = "";
+
+function openOrder(product){
+  selected = product;
+
+  document.getElementById("selectedProduct").innerText =
+    "Selected Setup: " + product;
+
+  document.getElementById("orderModal").style.display = "flex";
+}
+
+function closeModal(){
+  document.getElementById("orderModal").style.display = "none";
+}
+
+function submitOrder(){
+
+  let name = document.getElementById("name").value;
+  let discord = document.getElementById("discord").value;
+  let email = document.getElementById("email").value;
+
+  if(!name || !discord || !email){
+    alert("Please fill all required details.");
+    return;
+  }
+
+  alert(
+    "Order request submitted!\\n\\n" +
+    "Setup: " + selected +
+    "\\nName: " + name +
+    "\\nDiscord: " + discord
+  );
+
+  closeModal();
+}
+
+function openSupport(){
+  document.getElementById("supportModal").style.display = "flex";
+}
+
+function closeSupport(){
+  document.getElementById("supportModal").style.display = "none";
+}
+
+function supportSent(){
+  alert("Support request submitted!");
+  closeSupport();
+}
+
+window.onclick = function(event){
+
+  if(event.target === document.getElementById("orderModal")){
+    closeModal();
+  }
+
+  if(event.target === document.getElementById("supportModal")){
+    closeSupport();
+  }
+
+}
+
+</script>
+
+</body>
+</html>
